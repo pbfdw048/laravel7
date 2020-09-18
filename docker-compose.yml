@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.7"
 volumes:
   php-fpm-socket:
   db-store:
@@ -12,7 +12,7 @@ services:
   web:
     build: ./infra/docker/nginx
     ports:
-      - 80:80
+      - 10080:80
     volumes:
       - php-fpm-socket:/var/run/php-fpm
       - ./backend:/work/backend
@@ -23,3 +23,17 @@ services:
       - 3306:3306
     volumes:
       - db-store:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=db
+      - PMA_USER=phper
+      - PMA_PASSWORD=secret
+    ports:
+      - "3000:80"
+    volumes:
+      - /sessions
